@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎂 Пап, выбери мне подарок</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --accent: #7c5cff;
+    --accent-2: #00d9ff;
+    --accent-3: #ff4d8d;
+    --success: #00e676;
+    --card: rgba(255,255,255,0.06);
+    --card-hover: rgba(255,255,255,0.11);
+    --border: rgba(255,255,255,0.12);
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.6);
+  }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #302b63 0%, transparent 50%),
+                radial-gradient(circle at 80% 100%, #24243e 0%, transparent 50%),
+                linear-gradient(135deg, #0f0c29 0%, #1a1535 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 400px; height: 400px;
+    background: var(--accent);
+    top: -100px; left: -100px;
+    animation: float1 15s ease-in-out infinite;
+  }
+  body::after {
+    width: 500px; height: 500px;
+    background: var(--accent-2);
+    bottom: -150px; right: -150px;
+    animation: float2 18s ease-in-out infinite;
+  }
+  @keyframes float1 {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(80px, 60px); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(-80px, -60px); }
+  }
+
+  .sparkles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .sparkle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 8px 2px rgba(255,255,255,0.6);
+    animation: sparkle 4s infinite;
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  .container { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+
+  header { text-align: center; margin-bottom: 50px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+    backdrop-filter: blur(20px);
+    animation: fadeDown 0.6s ease both;
+  }
+  .badge .dot {
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #a89fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeDown 0.7s ease both 0.1s;
+  }
+
+  .subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+    animation: fadeDown 0.7s ease both 0.2s;
+  }
+  .subtitle .date {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 14px;
+    background: linear-gradient(135deg, rgba(255,77,141,0.2), rgba(124,92,255,0.2));
+    border: 1px solid rgba(255,77,141,0.4);
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ff8cb3;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gifts { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
+
+  .gift {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    width: 100%;
+    animation: fadeUp 0.7s ease both;
+  }
+  .gift:nth-child(1) { animation-delay: 0.3s; }
+  .gift:nth-child(2) { animation-delay: 0.4s; }
+  .gift:nth-child(3) { animation-delay: 0.5s; }
+  .gift:nth-child(4) { animation-delay: 0.6s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gift::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .gift::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transition: left 0.7s ease;
+    pointer-events: none;
+  }
+  .gift:hover:not(.opened):not(.disabled) {
+    transform: translateY(-6px) scale(1.01);
+    background: var(--card-hover);
+    box-shadow: 0 20px 50px rgba(124,92,255,0.25);
+  }
+  .gift:hover:not(.opened):not(.disabled)::before { opacity: 1; }
+  .gift:hover:not(.opened):not(.disabled)::after { left: 100%; }
+  .gift:active:not(.opened):not(.disabled) { transform: translateY(-2px) scale(0.99); }
+
+  .gift-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.25), rgba(0,217,255,0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.4s ease;
+    position: relative;
+  }
+  .gift-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gift:hover:not(.opened):not(.disabled) .gift-image { transform: scale(1.05) rotate(-2deg); }
+
+  .gift-info { flex: 1; min-width: 0; }
+
+  .gift-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .gift-price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .gift-price {
+    display: inline-block;
+    padding: 5px 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .gift-bonus {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, rgba(0,230,118,0.2), rgba(0,217,255,0.15));
+    border: 1px solid rgba(0,230,118,0.4);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--success);
+  }
+  .gift-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+  .gift-desc .bonus-line { display: block; margin-top: 4px; color: var(--success); font-weight: 500; }
+
+  /* Ссылка на товар */
+  .gift-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  .gift-link:hover {
+    background: rgba(0,217,255,0.15);
+    border-color: var(--accent-2);
+    color: #fff;
+    transform: translateX(3px);
+  }
+  .gift-link::after { content: '↗'; font-size: 0.9em; }
+
+  .gift.opened {
+    background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,217,255,0.1));
+    border-color: var(--success);
+    box-shadow: 0 0 40px rgba(0,230,118,0.3);
+    cursor: default;
+  }
+  .gift.opened .gift-image { animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15) rotate(8deg); }
+    100% { transform: scale(1); }
+  }
+  .gift.opened .gift-check {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    background: var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0a0a0a;
+    animation: pop 0.5s ease;
+    box-shadow: 0 0 20px rgba(0,230,118,0.6);
+    z-index: 2;
+  }
+  .gift.disabled {
+    opacity: 0.3;
+    filter: grayscale(0.8);
+    pointer-events: none;
+    transform: scale(0.97);
+  }
+
+  .gift-custom, .gift-laptop {
+    border-style: dashed;
+    border-color: rgba(255,255,255,0.2);
+  }
+  .gift-custom:hover:not(.opened):not(.disabled),
+  .gift-laptop:hover:not(.opened):not(.disabled) { border-style: solid; }
+  .gift-custom .gift-image {
+    background: linear-gradient(135deg, rgba(255,77,141,0.2), rgba(124,92,255,0.2));
+  }
+  .gift-laptop .gift-image {
+    background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(124,92,255,0.2));
+  }
+
+  .custom-form { margin-top: 18px; display: none; animation: fadeUp 0.5s ease; }
+  .custom-form.show { display: block; }
+  .custom-form label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .custom-form textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 14px 16px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: all 0.3s ease;
+  }
+  .custom-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,92,255,0.2);
+  }
+  .custom-form textarea::placeholder { color: rgba(255,255,255,0.35); }
+  .custom-form .actions { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .custom-success {
+    display: none;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,217,255,0.1));
+    border: 1px solid var(--success);
+    border-radius: 18px;
+    text-align: center;
+    margin-top: 16px;
+    animation: fadeUp 0.5s ease;
+  }
+  .custom-success.show { display: block; }
+  .custom-success .emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+  .custom-success .title { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; color: var(--success); }
+  .custom-success .text { font-size: 0.95rem; color: var(--muted); }
+
+  .reveal {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, margin 0.4s ease;
+    opacity: 0;
+    margin-bottom: 0;
+  }
+  .reveal.show { max-height: 3500px; opacity: 1; margin-bottom: 30px; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    backdrop-filter: blur(20px);
+    animation: panelIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .panel h2 { font-size: 1.4rem; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; line-height: 1.3; }
+
+  .specs-group { margin-bottom: 24px; }
+  .specs-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .specs-group-title .tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 100px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .specs-group-title .tag.bonus {
+    background: linear-gradient(135deg, var(--success), var(--accent-2));
+    color: #0a0a0a;
+  }
+  .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .spec {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    animation: fadeUp 0.5s ease both;
+  }
+  .spec:hover {
+    background: rgba(124,92,255,0.1);
+    border-color: rgba(124,92,255,0.4);
+    transform: translateY(-2px);
+  }
+  .spec-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .spec-value { font-size: 1rem; font-weight: 600; }
+
+  .surprise {
+    padding: 28px 24px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.2), rgba(0,217,255,0.15));
+    border: 1px solid rgba(124,92,255,0.4);
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .surprise::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: rotate 8s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes rotate { to { transform: rotate(360deg); } }
+  .surprise-text {
+    position: relative;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  .surprise-text strong {
+    background: linear-gradient(135deg, #fff, #a89fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.35rem;
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(124,92,255,0.35);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(124,92,255,0.5); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    box-shadow: none;
+    color: var(--muted);
+    padding: 10px 22px;
+    font-size: 0.9rem;
+  }
+  .btn-ghost:hover {
+    background: var(--card-hover);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: none;
+  }
+  .actions { text-align: center; margin-top: 10px; }
+
+  .confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    z-index: 999;
+    pointer-events: none;
+    animation: confetti-fall 3s ease-in forwards;
+  }
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    padding: 14px 24px;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 90vw;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast .ok { color: var(--success); font-size: 1.2rem; }
+
+  @media (max-width: 600px) {
+    body { padding: 24px 14px; }
+    header { margin-bottom: 32px; }
+    .gift { padding: 16px; gap: 14px; border-radius: 20px; flex-wrap: wrap; }
+    .gift-image { width: 80px; height: 80px; border-radius: 14px; font-size: 2.2rem; }
+    .gift-title { font-size: 1.05rem; }
+    .gift-price { font-size: 0.8rem; padding: 4px 10px; }
+    .gift-desc { font-size: 0.82rem; }
+    .gift.opened .gift-check { width: 30px; height: 30px; top: 10px; right: 10px; }
+    .panel { padding: 22px; border-radius: 20px; }
+    .surprise-text { font-size: 1rem; }
+    .surprise-text strong { font-size: 1.15rem; }
+    .badge { font-size: 0.78rem; padding: 6px 14px; }
+    .toast { font-size: 0.82rem; padding: 12px 18px; }
+    .custom-form .actions { flex-direction: column; }
+    .custom-form .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sparkles" id="sparkles"></div>
+
+<div class="container">
+  <header>
+    <div class="badge">
+      <span class="dot"></span>
+      Мой день рождения
+    </div>
+    <h1>Пап, выбери мне подарок 🎁</h1>
+    <p class="subtitle">
+      Нажми на то, что хочешь подарить. Или напиши свой вариант — буду рад(а) любому!
+      <br><span class="date">🎂 5 ноября</span>
+    </p>
+  </header>
+
+  <div class="gifts" id="gifts">
+    <!-- ПОДАРОК 1: Kugoo + наклейка -->
+    <button class="gift" data-id="kugoo" data-name="Kugoo MAX SPEED New + наклейка «Ноггано»">
+      <div class="gift-image">
+        <img src="kugoo.jpg" alt="Kugoo MAX SPEED New" onerror="this.style.display='none'; this.parentNode.textContent='🛴';">
+      </div>
+      <div class="gift-info">
+        <div class="gift-title">Kugoo MAX SPEED New</div>
+        <div class="gift-price-row">
+          <span class="gift-price">38 761 ₽</span>
+          <span class="gift-bonus">🎁 + наклейка</span>
+        </div>
+        <div class="gift-desc">
+          Электросамокат, 600 Вт, до 45 км/ч, съёмное сиденье
+          <span class="bonus-line">🎁 В комплекте: наклейка «Ноггано» 24×7 см</span>
+        </div>
+        <a href="https://www.ozon.ru/product/elektrosamokat-kugoo-max-speed-new-litsenziya-novyy-restayling-2209590524/?at=1oio1UGok4XwLweGoz2bZwJ6OdovHKjd" target="_blank" rel="noopener" class="gift-link" onclick="event.stopPropagation()">
+          🔗 Открыть на Ozon
+        </a>
+      </div>
+    </button>
+
+    <!-- ПОДАРОК 2: Edifier R1280DBs + стойки -->
+    <button class="gift" data-id="edifier" data-name="Edifier R1280DBs + стойки UniTeKi">
+      <div class="gift-image">
+        <img src="edifier.jpg" alt="Edifier R1280DBs" onerror="this.style.display='none'; this.parentNode.textContent='🔊';">
+      </div>
+      <div class="gift-info">
+        <div class="gift-title">Edifier R1280DBs</div>
+        <div class="gift-price-row">
+          <span class="gift-price">17 838 ₽</span>
+          <span class="gift-bonus">🎁 + стойки</span>
+        </div>
+        <div class="gift-desc">
+          Стереосистема 2.0, 42 Вт, Bluetooth, RCA / оптика / коаксиал
+          <span class="bonus-line">🎁 В комплекте: стойки UniTeKi (струбцина, 15 кг)</span>
+        </div>
+        <a href="https://www.ozon.ru/product/kolonki-kompyuternye-edifier-r1280dbs-black-stereosistema-2-0-bluetooth-729371026/?at=1oio1-VolCtFE03PTZHz4Q8RJ5J0RHuc" target="_blank" rel="noopener" class="gift-link" onclick="event.stopPropagation()">
+          🔗 Открыть на Ozon
+        </a>
+      </div>
+    </button>
+
+    <!-- ПОДАРОК 3: Свой вариант -->
+    <button class="gift gift-custom" data-id="custom" data-name="Свой вариант">
+      <div class="gift-image">✍️</div>
+      <div class="gift-info">
+        <div class="gift-title">Свой вариант</div>
+        <div class="gift-desc">Хочешь подарить что-то другое? Напиши — буду рад(а) 🎁</div>
+      </div>
+    </button>
+
+    <!-- ПОДАРОК 4: Игровой ноутбук -->
+    <button class="gift gift-laptop" data-id="laptop" data-name="Игровой ноутбук">
+      <div class="gift-image">
+        <img src="laptop.jpg" alt="Игровой ноутбук" onerror="this.style.display='none'; this.parentNode.textContent='🎮';">
+      </div>
+      <div class="gift-info">
+        <div class="gift-title">Игровой ноутбук</div>
+        <div class="gift-desc">Мощная видеокарта, много места — обсудим вместе 🎁</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Форма "свой вариант" -->
+  <div class="custom-form" id="custom-form">
+    <label for="custom-text">Что хочешь подарить?</label>
+    <textarea id="custom-text" placeholder="Например: хочу удочку, сертификат в Спортмастер, что-то своё..."></textarea>
+    <div class="actions">
+      <button class="btn" id="custom-send">Отправить 💌</button>
+      <button class="btn btn-ghost" id="custom-cancel">Отмена</button>
+    </div>
+  </div>
+
+  <!-- Форма "ноутбук" -->
+  <div class="custom-form" id="laptop-form">
+    <label for="laptop-text">Что важно в ноутбуке? (видеокарта, память, экран)</label>
+    <textarea id="laptop-text" placeholder="Например: RTX 4080, 32 ГБ ОЗУ, SSD 2 ТБ, экран 16 дюймов..."></textarea>
+    <div class="actions">
+      <button class="btn" id="laptop-send">Отправить 💌</button>
+      <button class="btn btn-ghost" id="laptop-cancel">Отмена</button>
+    </div>
+  </div>
+
+  <!-- Успех -->
+  <div class="custom-success" id="custom-success">
+    <span class="emoji">✅</span>
+    <div class="title">Отправлено!</div>
+    <div class="text">Спасибо, пап! Скоро спишемся 💛</div>
+  </div>
+
+  <!-- Панель характеристик -->
+  <div class="reveal" id="reveal">
+    <div class="panel">
+      <h2 id="panel-title">🎁 Характеристики</h2>
+      <div id="specs-container"></div>
+      <div class="surprise">
+        <div class="surprise-text" id="surprise-text"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="reset">🔄 Выбрать другой подарок</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="ok">✓</span>
+  <span id="toast-text">Выбор отправлен!</span>
+</div>
+
+<script>
+  const GIFTS = {
+    kugoo: {
+      name: 'Kugoo MAX SPEED New + наклейка «Ноггано»',
+      main: {
+        title: '🛴 Kugoo MAX SPEED New',
+        specs: [
+          { label: 'Мощность', value: '600 Вт' },
+          { label: 'Скорость', value: 'до 45 км/ч' },
+          { label: 'Аккумулятор', value: '11 000 мАч' },
+          { label: 'Зарядка', value: '6 часов' },
+          { label: 'Особенность', value: 'Съёмное сиденье' },
+          { label: 'Рейтинг', value: '⭐ 4.7 (447 отзывов)' },
+        ]
+      },
+      bonus: {
+        title: '🏷️ Наклейка «Ноггано»',
+        specs: [
+          { label: 'Размер', value: '24×7 см' },
+          { label: 'Материал', value: 'Винил' },
+          { label: 'Цвет', value: 'Белая матовая' },
+          { label: 'Кол-во', value: '1 шт' },
+          { label: 'Рейтинг', value: '⭐ 4.9 (12 отзывов)' },
+          { label: 'Тип', value: 'Дополнение к Kugoo' },
+        ]
+      },
+      surprise: '<strong>Пап, ты выбрал Kugoo + наклейку! 🛴🏷️</strong>Спасибо большое! Самокат с наклейкой «Ноггано» — огонь! Буду кататься с ветерком. Люблю тебя! ❤️'
+    },
+    edifier: {
+      name: 'Edifier R1280DBs + стойки UniTeKi',
+      main: {
+        title: '🔊 Edifier R1280DBs',
+        specs: [
+          { label: 'Мощность', value: '42 Вт' },
+          { label: 'Тип', value: 'Стереосистема 2.0' },
+          { label: 'Bluetooth', value: 'Есть' },
+          { label: 'Входы', value: 'RCA / оптика / коаксиал' },
+          { label: 'Выход', value: 'SUB OUT (для сабвуфера)' },
+          { label: 'Рейтинг', value: '⭐ 4.9 (4 962 отзыва)' },
+        ]
+      },
+      bonus: {
+        title: '🎚️ Стойки UniTeKi',
+        specs: [
+          { label: 'Нагрузка', value: 'до 15 кг' },
+          { label: 'Тип', value: 'Крепление на струбцине' },
+          { label: 'Материал', value: 'Металл, пластик, силикон' },
+          { label: 'Размеры', value: '28.9 × 26.5 × 10 мм' },
+          { label: 'Рейтинг', value: '⭐ 4.9 (2 934 отзыва)' },
+          { label: 'Тип', value: 'Дополнение к Edifier' },
+        ]
+      },
+      surprise: '<strong>Пап, ты выбрал Edifier R1280DBs + стойки! 🔊🎚️</strong>Спасибо огромное! Классный звук, Bluetooth, и колонки стоят красиво на стойках. Люблю тебя! ❤️'
+    }
+  };
+
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xljgoppd';
+
+  const gifts = document.querySelectorAll('.gift');
+  const reveal = document.getElementById('reveal');
+  const panelTitle = document.getElementById('panel-title');
+  const specsContainer = document.getElementById('specs-container');
+  const surpriseText = document.getElementById('surprise-text');
+  const resetBtn = document.getElementById('reset');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toast-text');
+
+  const customForm = document.getElementById('custom-form');
+  const customText = document.getElementById('custom-text');
+  const customSend = document.getElementById('custom-send');
+  const customCancel = document.getElementById('custom-cancel');
+
+  const laptopForm = document.getElementById('laptop-form');
+  const laptopText = document.getElementById('laptop-text');
+  const laptopSend = document.getElementById('laptop-send');
+  const laptopCancel = document.getElementById('laptop-cancel');
+
+  const customSuccess = document.getElementById('custom-success');
+
+  let selected = null;
+
+  function launchConfetti() {
+    const colors = ['#7c5cff', '#00d9ff', '#ff4d8d', '#00e676', '#ffd93d', '#ffffff'];
+    for (let i = 0; i < 60; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDelay = Math.random() * 0.5 + 's';
+      c.style.animationDuration = (2.5 + Math.random() * 1.5) + 's';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = c.style.width;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4500);
+    }
+  }
+
+  (function createSparkles() {
+    const box = document.getElementById('sparkles');
+    for (let i = 0; i < 25; i++) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 100 + 'vh';
+      s.style.animationDelay = Math.random() * 4 + 's';
+      s.style.animationDuration = (3 + Math.random() * 3) + 's';
+      box.appendChild(s);
+    }
+  })();
+
+  function showToast(text) {
+    toastText.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  function renderSpecsGroup(group, isBonus = false) {
+    const tag = isBonus ? '<span class="tag bonus">БОНУС</span>' : '<span class="tag">ОСНОВНОЕ</span>';
+    const specsHTML = group.specs.map(s => `
+      <div class="spec">
+        <div class="spec-label">${s.label}</div>
+        <div class="spec-value">${s.value}</div>
+      </div>
+    `).join('');
+    return `
+      <div class="specs-group">
+        <div class="specs-group-title">${group.title} ${tag}</div>
+        <div class="specs">${specsHTML}</div>
+      </div>
+    `;
+  }
+
+  async function sendToFormspree(payload) {
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          time: new Date().toLocaleString('ru-RU')
+        })
+      });
+      return res.ok;
+    } catch (e) { console.error(e); return false; }
+  }
+
+  gifts.forEach(gift => {
+    gift.addEventListener('click', async () => {
+      if (selected) return;
+      const id = gift.dataset.id;
+
+      if (id === 'custom') {
+        selected = 'custom';
+        gift.classList.add('opened');
+        const check = document.createElement('div');
+        check.className = 'gift-check';
+        check.textContent = '✓';
+        gift.appendChild(check);
+        gifts.forEach(g => { if (g !== gift) g.classList.add('disabled'); });
+        setTimeout(() => {
+          customForm.classList.add('show');
+          customText.focus();
+          customForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+        return;
+      }
+
+      if (id === 'laptop') {
+        selected = 'laptop';
+        gift.classList.add('opened');
+        const check = document.createElement('div');
+        check.className = 'gift-check';
+        check.textContent = '✓';
+        gift.appendChild(check);
+        gifts.forEach(g => { if (g !== gift) g.classList.add('disabled'); });
+        setTimeout(() => {
+          laptopForm.classList.add('show');
+          laptopText.focus();
+          laptopForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+        return;
+      }
+
+      const data = GIFTS[id];
+      if (!data) return;
+      selected = id;
+
+      gift.classList.add('opened');
+      const check = document.createElement('div');
+      check.className = 'gift-check';
+      check.textContent = '✓';
+      gift.appendChild(check);
+
+      gifts.forEach(g => { if (g !== gift) g.classList.add('disabled'); });
+      launchConfetti();
+
+      panelTitle.textContent = '🎁 ' + data.name;
+      specsContainer.innerHTML =
+        renderSpecsGroup(data.main, false) +
+        renderSpecsGroup(data.bonus, true);
+      surpriseText.innerHTML = data.surprise;
+
+      setTimeout(() => {
+        reveal.classList.add('show');
+        reveal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
+
+      const ok = await sendToFormspree({
+        gift: data.name,
+        gift_id: id,
+        _subject: '🎁 Папа выбрал подарок: ' + data.name
+      });
+      showToast(ok ? 'Выбор отправлен! ✓' : 'Выбор сделан');
+    });
+  });
+
+  customSend.addEventListener('click', async () => {
+    const text = customText.value.trim();
+    if (!text) {
+      customText.focus();
+      customText.style.borderColor = '#ff4d8d';
+      setTimeout(() => customText.style.borderColor = '', 1500);
+      return;
+    }
+    customSend.disabled = true;
+    customSend.textContent = 'Отправляю...';
+    const ok = await sendToFormspree({
+      gift: '✍️ Свой вариант',
+      gift_id: 'custom',
+      message: text,
+      _subject: '🎁 Папа выбрал свой вариант подарка'
+    });
+    if (ok) {
+      launchConfetti();
+      customForm.classList.remove('show');
+      customSuccess.classList.add('show');
+      customSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      showToast('Ошибка отправки, попробуй ещё раз');
+      customSend.disabled = false;
+      customSend.textContent = 'Отправить 💌';
+    }
+  });
+
+  customCancel.addEventListener('click', () => {
+    customForm.classList.remove('show');
+    customText.value = '';
+    resetAll();
+  });
+
+  laptopSend.addEventListener('click', async () => {
+    const text = laptopText.value.trim();
+    if (!text) {
+      laptopText.focus();
+      laptopText.style.borderColor = '#ff4d8d';
+      setTimeout(() => laptopText.style.borderColor = '', 1500);
+      return;
+    }
+    laptopSend.disabled = true;
+    laptopSend.textContent = 'Отправляю...';
+    const ok = await sendToFormspree({
+      gift: '🎮 Игровой ноутбук',
+      gift_id: 'laptop',
+      message: text,
+      _subject: '🎮 Папа выбрал игровой ноутбук'
+    });
+    if (ok) {
+      launchConfetti();
+      laptopForm.classList.remove('show');
+      customSuccess.classList.add('show');
+      customSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      showToast('Ошибка отправки, попробуй ещё раз');
+      laptopSend.disabled = false;
+      laptopSend.textContent = 'Отправить 💌';
+    }
+  });
+
+  laptopCancel.addEventListener('click', () => {
+    laptopForm.classList.remove('show');
+    laptopText.value = '';
+    resetAll();
+  });
+
+  function resetAll() {
+    selected = null;
+    reveal.classList.remove('show');
+    customForm.classList.remove('show');
+    laptopForm.classList.remove('show');
+    customSuccess.classList.remove('show');
+    customText.value = '';
+    laptopText.value = '';
+    customSend.disabled = false;
+    customSend.textContent = 'Отправить 💌';
+    laptopSend.disabled = false;
+    laptopSend.textContent = 'Отправить 💌';
+
+    gifts.forEach(g => {
+      g.classList.remove('opened', 'disabled');
+      const c = g.querySelector('.gift-check');
+      if (c) c.remove();
+    });
+  }
+
+  resetBtn.addEventListener('click', () => {
+    resetAll();
+    setTimeout(() => {
+      document.getElementById('gifts').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  });
+</script>
+</body>
+</html>
